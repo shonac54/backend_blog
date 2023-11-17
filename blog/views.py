@@ -39,3 +39,10 @@ def viewBlog(request):
             
             return HttpResponse(json.dumps(serialize_data.data))
 
+@csrf_exempt
+def viewMyblog(request):
+    if request.method == "POST":
+        recieved_data=json.loads(request.body)
+        getUserid=recieved_data["userid"]
+        data=list(BlogModel.objects.filter(Q(userid__icontains=getUserid)).values())
+        return HttpResponse(json.dumps(data))
