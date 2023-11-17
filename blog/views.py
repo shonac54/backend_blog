@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from blog.serializer import RegisterSerializer
+from blog.serializer import RegisterSerializer,BlogSerializer
 
 from django.db.models import Q
 
@@ -18,4 +18,17 @@ def userRegister(request):
             return HttpResponse(json.dumps({"status":"success"}))
         else:
             return HttpResponse(json.dumps({"status":"failed"}))
+        
+@csrf_exempt
+def userBlog(request):
+    if request.method == "POST":
+        recieved_data = json.loads(request.body)
+        print(recieved_data)
+        serializer_check = BlogSerializer(data = recieved_data)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"success"}))
+        else:
+            return HttpResponse(json.dumps({"status":"failed"}))
+
 
